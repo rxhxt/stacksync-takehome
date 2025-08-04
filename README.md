@@ -25,7 +25,7 @@ docker run -p 8080:8080 takehome-stacksync
 #### Example Request
 
 ```bash
-curl -X POST https://YOUR_CLOUD_RUN_URL/execute \
+curl -X POST https://stacksync-python-api-102239670054.us-west1.run.app/execute \
    -H "Content-Type: application/json" \
   -d '{"script": "def main():\n    print(\"hello\")\n    return {\"foo\": \"bar\"}"}'
 ```
