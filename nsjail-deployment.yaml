@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nsjail-executor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nsjail-executor
+  template:
+    metadata:
+      labels:
+        app: nsjail-executor
+    spec:
+      containers:
+      - name: nsjail-executor
+        image: gcr.io/stacksync-takehome-468004/nsjail-executor
+        ports:
+        - containerPort: 8080
+        securityContext:
+          privileged: true
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nsjail-executor
+spec:
+  selector:
+    app: nsjail-executor
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: LoadBalancer

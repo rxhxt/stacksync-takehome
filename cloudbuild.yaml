@@ -1,0 +1,39 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-f', 'cloudrun.Dockerfile', '-t', 'gcr.io/$PROJECT_ID/nsjail-api-gateway', '.']
+  
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/nsjail-api-gateway']
+
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-f', 'Dockerfile', '-t', 'gcr.io/$PROJECT_ID/nsjail-executor', '.']
+  
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/nsjail-executor']
+  
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - 'run'
+  - 'deploy'
+  - 'nsjail-api-gateway'
+  - '--image'
+  - 'gcr.io/$PROJECT_ID/nsjail-api-gateway'
+  - '--region'
+  - 'us-west1'
+  - '--platform'
+  - 'managed'
+  - '--allow-unauthenticated'
+  - '--set-env-vars'
+  - 'NSJAIL_EXECUTOR_URL=http://34.83.190.122'
+  - '--memory'
+  - '512Mi'
+  - '--cpu'
+  - '1'
+  - '--timeout'
+  - '60s'
+
+images:
+- 'gcr.io/$PROJECT_ID/nsjail-api-gateway'
+- 'gcr.io/$PROJECT_ID/nsjail-executor'

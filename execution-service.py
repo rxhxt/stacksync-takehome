@@ -91,7 +91,7 @@ def parse_execution_output(proc):
 
 @app.route('/execute', methods=['POST'])
 def execute_script():
-    """Execute script in nsjail sandbox."""
+    """Internal execution endpoint for GKE."""
     data = request.get_json()
     
     if not data or 'script' not in data:
@@ -116,8 +116,7 @@ def execute_script():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     finally:
-        if os.path.exists(tmp_script_path):
-            os.remove(tmp_script_path)
+        os.remove(tmp_script_path)
 
 @app.route('/health', methods=['GET'])
 def health_check():

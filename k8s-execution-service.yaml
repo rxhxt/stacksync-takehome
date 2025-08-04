@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: execution-service
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: execution-service
+  template:
+    metadata:
+      labels:
+        app: execution-service
+    spec:
+      containers:
+      - name: execution-service
+        image: gcr.io/stacksync-takehome-468004/execution-service
+        ports:
+        - containerPort: 8080
+        securityContext:
+          privileged: true 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: execution-service
+spec:
+  selector:
+    app: execution-service
+  ports:
+  - port: 8080
+    targetPort: 8080
+  type: LoadBalancer  
